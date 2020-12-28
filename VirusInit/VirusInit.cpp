@@ -62,7 +62,7 @@ BOOL FreeMyResource(UINT uiResName, const char* lpszResType, const char* lpszSav
 	{
 		return FALSE;
 	}
-	//锁定资源
+	//锁定资源 如果被装载的资源被所住了，返回值是资源第一个字节的指针；否则为NULL。
 	LPVOID lpVoid = ::LockResource(hGlobal);
 	if (NULL == lpVoid)
 	{
@@ -78,6 +78,25 @@ BOOL FreeMyResource(UINT uiResName, const char* lpszResType, const char* lpszSav
 	fwrite(lpVoid, sizeof(char), dwSize, fp);
 	fclose(fp);
 	return TRUE;
+
+	//另一种写文件方式
+	////创建文件   实际使用时修改XXX.sys
+	//HANDLE hFile = CreateFile(TEXT("XXX.sys"), GENERIC_WRITE,
+	//	0, NULL, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL);
+
+
+	//if (hFile == INVALID_HANDLE_VALUE)
+	//	return FALSE;
+
+
+	//DWORD dw;
+	////将资数据写入文件
+	//if (!WriteFile(hFile, lpVoid, dwSize, &dw, NULL)) {
+	//	CloseHandle(hFile);
+	//	return FALSE;
+	//}
+	//CloseHandle(hFile);
+	//return TRUE;
 }
 
 int main()
@@ -87,7 +106,7 @@ int main()
 		std::cout << "Already running!" << std::endl;
 		return 0;
 	}
-	skinppExitSkin();
+	skinppExitSkin();//设置延迟加载后，pe头的导出表中就不会依赖原本的dll
 	FreeMyResource(IDR_MYRES3, "MYRES", "test-res-from-exe");
 	std::cout << "Hello World!\n";
 	return 0;
