@@ -4,8 +4,8 @@
 #include <iostream>
 #include <afxcmn.h>
 #include <tchar.h>
-#include "Skins\\SkinPPWTL.h"
-#pragma comment(lib, "Skins\\SkinPPWTL.lib")
+//#include "Skins\\SkinPPWTL.h"
+//#pragma comment(lib, "Skins\\SkinPPWTL.lib")
 #include "resource.h"
 /**
  * 恶意程序常见初始化操作技术
@@ -106,7 +106,7 @@ int main()
 		std::cout << "Already running!" << std::endl;
 		return 0;
 	}
-	skinppExitSkin();//设置延迟加载后，pe头的导出表中就不会依赖原本的dll
+	//skinppExitSkin();//设置延迟加载后，pe头的导出表中就不会依赖原本的dll
 	FreeMyResource(IDR_MYRES3, "MYRES", "test-res-from-exe");
 	std::cout << "Hello World!\n";
 	return 0;

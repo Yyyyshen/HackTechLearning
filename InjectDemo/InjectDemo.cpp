@@ -102,7 +102,7 @@ BOOL CreateRemoteThreadInjectDll(DWORD dwProcessId, const char* pszDllFileName)
 	}
 	//创建远线程
 	HANDLE hRemoteThread = ::CreateRemoteThread(hProcess, NULL, 0, (LPTHREAD_START_ROUTINE)pFuncProcAddr, pDllAddr, 0, NULL);
-	auto ret = ::GetLastError();//注入程序是64位，则自己的程序也要是64位，否则会注入失败
+	auto ret = ::GetLastError();//注入程序是64位，则自己的程序也要是64位，否则会注入失败，返回错误码5
 	if (NULL == hRemoteThread)
 	{
 		return FALSE;
@@ -153,6 +153,7 @@ BOOL ZwCreateThreadExInjectDll(DWORD dwProcessId, const char* pszDllFileName)
 	}
 	// 获取LoadLibraryA函数地址
 	pFuncProcAddr = ::GetProcAddress(::GetModuleHandle("Kernel32.dll"), "LoadLibraryA");
+	//printf("%x", LoadLibraryA);//验证函数地址相同
 	if (NULL == pFuncProcAddr)
 	{
 		return FALSE;
@@ -196,6 +197,7 @@ BOOL ZwCreateThreadExInjectDll(DWORD dwProcessId, const char* pszDllFileName)
 	{
 		return FALSE;
 	}
+	DWORD ret = GetLastError();
 	// 关闭句柄
 	::CloseHandle(hProcess);
 	::FreeLibrary(hNtdllDll);
@@ -410,17 +412,22 @@ int main()
 	BOOL bRet = FALSE;
 	//g_hDllModule = GetCurrentModule();
 	//SetGlobalHook();
-	//bRet = CreateRemoteThreadInjectDll(6296, "‪‪C:\workspaceKernel\HackTechLearning\x64\Debug\TestDll.dll");
-	//bRet = ZwCreateThreadExInjectDll(6296, "‪C:\workspaceKernel\HackTechLearning\x64\Debug\TestDll.dll");
-	bRet = APCInjectDll("explorer.exe", "‪C:\workspaceKernel\HackTechLearning\x64\Debug\TestDll.dll");
+	//bRet = CreateRemoteThreadInjectDll(19788, "C:\\workspaceKernel\\HackTechLearning\\x64\\Debug\\TestDll.dll");
+	//bRet = ZwCreateThreadExInjectDll(10168, "C:\\workspaceKernel\\HackTechLearning\\x64\\Debug\\TestDll.dll");
+	bRet = APCInjectDll("explorer.exe", "C:\\workspaceKernel\\HackTechLearning\\x64\\Debug\\TestDll.dll");
 	if (bRet)
 	{
+		//注入方法执行成功但dll没有启动，调试发现内存中路径前有两个问号,可能是从属性页面复制过来多出来的BOM头，不可见
+		//然后导致一直找不到模块，大坑
 		std::cout << "Inject OK.\n";
-}
+	}
 	else
 	{
 		std::cout << "Inject ERROR.\n";
 	}
+	//LoadLibraryA("C:\\workspaceKernel\\HackTechLearning\\x64\\Debug\\TestDll.dll");
+	////加载dll过程出错，GetLastError 返回126 用单斜杠路径找不到模块，改为双斜杠即可 0x00007ff7738737bd
+	//auto error = GetLastError();
 	system("pause");
 	UnsetGlobalHook();
 }
