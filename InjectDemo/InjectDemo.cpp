@@ -2,7 +2,8 @@
 //
 
 #include <iostream>
-#include "windows.h"
+#include <Windows.h>
+#include <TlHelp32.h>
 /**
  * 常见注入方式
  * 全局钩子
@@ -101,6 +102,7 @@ BOOL CreateRemoteThreadInjectDll(DWORD dwProcessId, const char* pszDllFileName)
 	}
 	//创建远线程
 	HANDLE hRemoteThread = ::CreateRemoteThread(hProcess, NULL, 0, (LPTHREAD_START_ROUTINE)pFuncProcAddr, pDllAddr, 0, NULL);
+	auto ret = ::GetLastError();//注入程序是64位，则自己的程序也要是64位，否则会注入失败
 	if (NULL == hRemoteThread)
 	{
 		return FALSE;
@@ -201,13 +203,224 @@ BOOL ZwCreateThreadExInjectDll(DWORD dwProcessId, const char* pszDllFileName)
 	return TRUE;
 }
 
+/**
+ * APC注入
+ * 指函数在特定线程中被异步执行，每个线程都有自己的APC队列使用QueueUserAPC把一个函数压入队列
+ * 一个进程包含多个线程，应向目标进程所有线程都插入相同APC函数，保证注入
+ */
+
+ // 根据进程名称获取PID
+DWORD GetProcessIdByProcessName(const char* pszProcessName)
+{
+	DWORD dwProcessId = 0;
+	PROCESSENTRY32 pe32 = { 0 };
+	HANDLE hSnapshot = NULL;
+	BOOL bRet = FALSE;
+	::RtlZeroMemory(&pe32, sizeof(pe32));//用0填充一块内存
+	pe32.dwSize = sizeof(pe32);
+
+	// 获取进程快照
+	hSnapshot = ::CreateToolhelp32Snapshot(TH32CS_SNAPPROCESS, 0);
+	if (NULL == hSnapshot)
+	{
+		return dwProcessId;
+	}
+
+	// 获取第一条进程快照信息
+	bRet = ::Process32First(hSnapshot, &pe32);
+	while (bRet)
+	{
+		// 获取快照信息
+		if (0 == ::lstrcmpi(pe32.szExeFile, pszProcessName))
+		{
+			dwProcessId = pe32.th32ProcessID;
+			break;
+		}
+
+		// 遍历下一个进程快照信息
+		bRet = ::Process32Next(hSnapshot, &pe32);
+	}
+
+	return dwProcessId;
+}
+
+
+// 根据PID获取所有的相应线程ID
+BOOL GetAllThreadIdByProcessId(DWORD dwProcessId, DWORD** ppThreadId, DWORD* pdwThreadIdLength)
+{
+	DWORD* pThreadId = NULL;
+	DWORD dwThreadIdLength = 0;
+	DWORD dwBufferLength = 1000;
+	THREADENTRY32 te32 = { 0 };
+	HANDLE hSnapshot = NULL;
+	BOOL bRet = TRUE;
+
+	do
+	{
+		// 申请内存
+		pThreadId = new DWORD[dwBufferLength];
+		if (NULL == pThreadId)
+		{
+			bRet = FALSE;
+			break;
+		}
+		::RtlZeroMemory(pThreadId, (dwBufferLength * sizeof(DWORD)));
+
+		// 获取线程快照
+		::RtlZeroMemory(&te32, sizeof(te32));
+		te32.dwSize = sizeof(te32);
+		hSnapshot = ::CreateToolhelp32Snapshot(TH32CS_SNAPTHREAD, 0);
+		if (NULL == hSnapshot)
+		{
+			bRet = FALSE;
+			break;
+		}
+
+		// 获取第一条线程快照信息
+		bRet = ::Thread32First(hSnapshot, &te32);
+		while (bRet)
+		{
+			// 获取进程对应的线程ID
+			if (te32.th32OwnerProcessID == dwProcessId)
+			{
+				pThreadId[dwThreadIdLength] = te32.th32ThreadID;
+				dwThreadIdLength++;
+			}
+
+			// 遍历下一个线程快照信息
+			bRet = ::Thread32Next(hSnapshot, &te32);
+		}
+
+		// 返回
+		*ppThreadId = pThreadId;
+		*pdwThreadIdLength = dwThreadIdLength;
+		bRet = TRUE;
+
+	} while (FALSE);
+
+	if (FALSE == bRet)
+	{
+		if (pThreadId)
+		{
+			delete[]pThreadId;
+			pThreadId = NULL;
+		}
+	}
+
+	return bRet;
+}
+
+BOOL APCInjectDll(const char* pszProcessName, const char* pszDllName)
+{
+	BOOL bRet = FALSE;
+	DWORD dwProcessId = 0;
+	DWORD* pThreadId = NULL;
+	DWORD dwThreadIdLength = 0;
+	HANDLE hProcess = NULL, hThread = NULL;
+	PVOID pBaseAddress = NULL;
+	PVOID pLoadLibraryAFunc = NULL;
+	SIZE_T dwRet = 0, dwDllPathLen = 1 + ::lstrlen(pszDllName);
+	DWORD i = 0;
+
+	do
+	{
+		// 根据进程名称获取PID
+		dwProcessId = GetProcessIdByProcessName(pszProcessName);
+		if (0 >= dwProcessId)
+		{
+			bRet = FALSE;
+			break;
+		}
+
+		// 根据PID获取所有的相应线程ID
+		bRet = GetAllThreadIdByProcessId(dwProcessId, &pThreadId, &dwThreadIdLength);
+		if (FALSE == bRet)
+		{
+			bRet = FALSE;
+			break;
+		}
+
+		// 打开注入进程
+		hProcess = ::OpenProcess(PROCESS_ALL_ACCESS, FALSE, dwProcessId);
+		if (NULL == hProcess)
+		{
+			bRet = FALSE;
+			break;
+		}
+
+		// 在注入进程空间申请内存
+		pBaseAddress = ::VirtualAllocEx(hProcess, NULL, dwDllPathLen, MEM_COMMIT | MEM_RESERVE, PAGE_EXECUTE_READWRITE);
+		if (NULL == pBaseAddress)
+		{
+			bRet = FALSE;
+			break;
+		}
+		// 向申请的空间中写入DLL路径数据 
+		::WriteProcessMemory(hProcess, pBaseAddress, pszDllName, dwDllPathLen, &dwRet);
+		if (dwRet != dwDllPathLen)
+		{
+			bRet = FALSE;
+			break;
+		}
+
+		// 获取 LoadLibrary 地址
+		pLoadLibraryAFunc = ::GetProcAddress(::GetModuleHandle("kernel32.dll"), "LoadLibraryA");
+		if (NULL == pLoadLibraryAFunc)
+		{
+			bRet = FALSE;
+			break;
+		}
+
+		// 遍历线程, 插入APC
+		for (i = 0; i < dwThreadIdLength; i++)
+		{
+			// 打开线程
+			hThread = ::OpenThread(THREAD_ALL_ACCESS, FALSE, pThreadId[i]);
+			if (hThread)
+			{
+				// 插入APC
+				::QueueUserAPC((PAPCFUNC)pLoadLibraryAFunc, hThread, (ULONG_PTR)pBaseAddress);
+				// 关闭线程句柄
+				::CloseHandle(hThread);
+				hThread = NULL;
+			}
+		}
+
+		bRet = TRUE;
+
+	} while (FALSE);
+
+	// 释放内存
+	if (hProcess)
+	{
+		::CloseHandle(hProcess);
+		hProcess = NULL;
+	}
+	if (pThreadId)
+	{
+		delete[]pThreadId;
+		pThreadId = NULL;
+	}
+
+	return bRet;
+}
+
 int main()
 {
+	BOOL bRet = FALSE;
 	//g_hDllModule = GetCurrentModule();
 	//SetGlobalHook();
-	//CreateRemoteThreadInjectDll(18804, "‪C:\\workspaceTools\\filelist\\filelist.dll");
-	ZwCreateThreadExInjectDll(6624, "C:\\workspaceTools\\filelist\\filelist.dll");
-	std::cout << "Hello World!\n";
+	//bRet = CreateRemoteThreadInjectDll(6296, "‪‪C:\workspaceKernel\HackTechLearning\x64\Debug\TestDll.dll");
+	//bRet = ZwCreateThreadExInjectDll(6296, "‪C:\workspaceKernel\HackTechLearning\x64\Debug\TestDll.dll");
+	bRet = APCInjectDll("explorer.exe", "‪C:\workspaceKernel\HackTechLearning\x64\Debug\TestDll.dll");
+	if (bRet)
+	{
+		std::cout << "Inject OK.\n";
+}
+	else
+	{
+		std::cout << "Inject ERROR.\n";
+	}
 	system("pause");
 	UnsetGlobalHook();
 }
