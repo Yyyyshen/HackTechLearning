@@ -132,39 +132,125 @@ BOOL CreateUserProcess(const char* lpszFileName)
 	}
 	return bRet;
 }
+//以服务类程序启动的入口函数，并做一些测试动作
+// 全局变量
+char g_szServiceName[MAX_PATH] = "CreateProcessAsUser_Test.exe";    // 服务名称 
+SERVICE_STATUS g_ServiceStatus = { 0 };
+SERVICE_STATUS_HANDLE g_ServiceStatusHandle = { 0 };
+void ShowMessage(const char* lpszMessage, const char* lpszTitle)
+{
+	// 获取当前的Session ID
+	DWORD dwSessionId = ::WTSGetActiveConsoleSessionId();
+	// 显示消息对话框
+	DWORD dwResponse = 0;
+	::WTSSendMessage(WTS_CURRENT_SERVER_HANDLE, dwSessionId,
+		(LPSTR)lpszTitle, (1 + ::lstrlen(lpszTitle)),
+		(LPSTR)lpszMessage, (1 + ::lstrlen(lpszMessage)),
+		0, 0, &dwResponse, FALSE);
+}
+void DoTask()
+{
+	// 自己程序实现部分代码放在这里
+	// 显示对话框
+	ShowMessage("Hi Demon·Gan\nThis Is From Session 0 Service!\n", "HELLO");
+	// 创建用户桌面进程
+	CreateUserProcess("C:\\workspaceTest\\PEview\\PEview.exe");
+}
+void __stdcall ServiceCtrlHandle(DWORD dwOperateCode)
+{
+	switch (dwOperateCode)
+	{
+	case SERVICE_CONTROL_PAUSE:
+	{
+		// 暂停
+		g_ServiceStatus.dwCurrentState = SERVICE_PAUSED;
+		break;
+	}
+	case SERVICE_CONTROL_CONTINUE:
+	{
+		// 继续
+		g_ServiceStatus.dwCurrentState = SERVICE_RUNNING;
+		break;
+	}
+	case SERVICE_CONTROL_STOP:
+	{
+		// 停止
+		g_ServiceStatus.dwWin32ExitCode = 0;
+		g_ServiceStatus.dwCurrentState = SERVICE_STOPPED;
+		g_ServiceStatus.dwCheckPoint = 0;
+		g_ServiceStatus.dwWaitHint = 0;
+		::SetServiceStatus(g_ServiceStatusHandle, &g_ServiceStatus);
+		break;
+	}
+	case SERVICE_CONTROL_INTERROGATE:
+	{
+		// 询问
+		break;
+	}
+	default:
+		break;
+	}
+}
+void __stdcall ServiceMain(DWORD dwArgc, char* lpszArgv)
+{
+	g_ServiceStatus.dwServiceType = SERVICE_WIN32;
+	g_ServiceStatus.dwCurrentState = SERVICE_START_PENDING;
+	g_ServiceStatus.dwControlsAccepted = SERVICE_ACCEPT_STOP;
+	g_ServiceStatus.dwWin32ExitCode = 0;
+	g_ServiceStatus.dwServiceSpecificExitCode = 0;
+	g_ServiceStatus.dwCheckPoint = 0;
+	g_ServiceStatus.dwWaitHint = 0;
 
+	g_ServiceStatusHandle = ::RegisterServiceCtrlHandler(g_szServiceName, ServiceCtrlHandle);
+
+	g_ServiceStatus.dwCurrentState = SERVICE_RUNNING;
+	g_ServiceStatus.dwCheckPoint = 0;
+	g_ServiceStatus.dwWaitHint = 0;
+	::SetServiceStatus(g_ServiceStatusHandle, &g_ServiceStatus);
+
+	// 自己程序实现部分代码放在这里
+	DoTask();
+}
 
 int main()
 {
-	BOOL bRet = FALSE;
-	bRet = WinExec_Test("C:\\workspaceTest\\PEview\\PEview.exe", SW_SHOWNORMAL);
-	if (bRet)
-	{
-		printf("WinExec_Test Run OK.\n");
-	}
-	else
-	{
-		printf("WinExec_Test Run ERROR.\n");
-	}
-	bRet = ShellExecute_Test("C:\\workspaceTest\\PEview\\PEview.exe", SW_SHOWNORMAL);
-	if (bRet)
-	{
-		printf("ShellExecute_Test Run OK.\n");
-	}
-	else
-	{
-		printf("ShellExecute_Test Run ERROR.\n");
-	}
-	bRet = CreateProcess_Test("C:\\workspaceTest\\PEview\\PEview.exe", SW_SHOWNORMAL);
-	if (bRet)
-	{
-		printf("CreateProcess_Test Run OK.\n");
-	}
-	else
-	{
-		printf("CreateProcess_Test Run ERROR.\n");
-	}
+	//测试普通应用程序启动进程方式
+	//BOOL bRet = FALSE;
+	//bRet = WinExec_Test("C:\\workspaceTest\\PEview\\PEview.exe", SW_SHOWNORMAL);
+	//if (bRet)
+	//{
+	//	printf("WinExec_Test Run OK.\n");
+	//}
+	//else
+	//{
+	//	printf("WinExec_Test Run ERROR.\n");
+	//}
+	//bRet = ShellExecute_Test("C:\\workspaceTest\\PEview\\PEview.exe", SW_SHOWNORMAL);
+	//if (bRet)
+	//{
+	//	printf("ShellExecute_Test Run OK.\n");
+	//}
+	//else
+	//{
+	//	printf("ShellExecute_Test Run ERROR.\n");
+	//}
+	//bRet = CreateProcess_Test("C:\\workspaceTest\\PEview\\PEview.exe", SW_SHOWNORMAL);
+	//if (bRet)
+	//{
+	//	printf("CreateProcess_Test Run OK.\n");
+	//}
+	//else
+	//{
+	//	printf("CreateProcess_Test Run ERROR.\n");
+	//}
 
-	system("pause");
+	//system("pause");
+
+	//测试服务类程序启动进程方式
+	//注册函数入口为服务类程序的函数入口
+	SERVICE_TABLE_ENTRY stDispatchTable[] = { { g_szServiceName, (LPSERVICE_MAIN_FUNCTION)ServiceMain }, { NULL, NULL } };
+	::StartServiceCtrlDispatcher(stDispatchTable);
+
+	return 0;
 }
 
