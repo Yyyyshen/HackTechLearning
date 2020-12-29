@@ -259,7 +259,7 @@ void test_run_service()
 #include "MmLoadDll.h"
 int test_load_dll()
 {
-	char szFileName[MAX_PATH] = "C:\\workspaceKernel\\HackTechLearning\\x64\\Debug\\TestDll.dll";
+	char szFileName[MAX_PATH] = "C:\\workspaceKernel\\HackTechLearning\\Debug\\TestDll.dll";
 
 	// 打开DLL文件并获取DLL文件大小
 	HANDLE hFile = ::CreateFile(szFileName, GENERIC_READ | GENERIC_WRITE,
@@ -358,7 +358,7 @@ int main()
 	//test_run_service();
 
 	//测试加载dll
-	//test_load_dll();
+	test_load_dll();
 
 	//测试加载exe
 	//test_load_exe();

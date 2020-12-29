@@ -15,6 +15,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "RunProc", "RunProc\RunProc.
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ServiceLoader", "ServiceLoader\ServiceLoader.vcxproj", "{8270B98C-8A6F-43DD-B2BE-6C1F26A6E3A9}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "SelfStartUp", "SelfStartUp\SelfStartUp.vcxproj", "{01826574-ACBD-43E7-9BB9-C052EF262812}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -71,6 +73,14 @@ Global
 		{8270B98C-8A6F-43DD-B2BE-6C1F26A6E3A9}.Release|x64.Build.0 = Release|x64
 		{8270B98C-8A6F-43DD-B2BE-6C1F26A6E3A9}.Release|x86.ActiveCfg = Release|Win32
 		{8270B98C-8A6F-43DD-B2BE-6C1F26A6E3A9}.Release|x86.Build.0 = Release|Win32
+		{01826574-ACBD-43E7-9BB9-C052EF262812}.Debug|x64.ActiveCfg = Debug|x64
+		{01826574-ACBD-43E7-9BB9-C052EF262812}.Debug|x64.Build.0 = Debug|x64
+		{01826574-ACBD-43E7-9BB9-C052EF262812}.Debug|x86.ActiveCfg = Debug|Win32
+		{01826574-ACBD-43E7-9BB9-C052EF262812}.Debug|x86.Build.0 = Debug|Win32
+		{01826574-ACBD-43E7-9BB9-C052EF262812}.Release|x64.ActiveCfg = Release|x64
+		{01826574-ACBD-43E7-9BB9-C052EF262812}.Release|x64.Build.0 = Release|x64
+		{01826574-ACBD-43E7-9BB9-C052EF262812}.Release|x86.ActiveCfg = Release|Win32
+		{01826574-ACBD-43E7-9BB9-C052EF262812}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
