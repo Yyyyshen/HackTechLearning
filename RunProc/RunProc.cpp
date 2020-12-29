@@ -14,9 +14,9 @@
  * 还可以直接加载到内存中运行
  */
 
-/**
- * 创建进程API
- */
+ /**
+  * 创建进程API
+  */
 BOOL WinExec_Test(const char* pszExePath, UINT uiCmdShow)
 {
 	UINT uiRet = 0;
@@ -58,6 +58,38 @@ BOOL CreateProcess_Test(const char* pszExePath, UINT uiCmdShow)
 		return TRUE;
 	}
 	return FALSE;
+}
+
+void test_run_proc()
+{
+	BOOL bRet = FALSE;
+	bRet = WinExec_Test("C:\\workspaceTest\\PEview\\PEview.exe", SW_SHOWNORMAL);
+	if (bRet)
+	{
+		printf("WinExec_Test Run OK.\n");
+	}
+	else
+	{
+		printf("WinExec_Test Run ERROR.\n");
+	}
+	bRet = ShellExecute_Test("C:\\workspaceTest\\PEview\\PEview.exe", SW_SHOWNORMAL);
+	if (bRet)
+	{
+		printf("ShellExecute_Test Run OK.\n");
+	}
+	else
+	{
+		printf("ShellExecute_Test Run ERROR.\n");
+	}
+	bRet = CreateProcess_Test("C:\\workspaceTest\\PEview\\PEview.exe", SW_SHOWNORMAL);
+	if (bRet)
+	{
+		printf("CreateProcess_Test Run OK.\n");
+	}
+	else
+	{
+		printf("CreateProcess_Test Run ERROR.\n");
+	}
 }
 
 /**
@@ -133,7 +165,6 @@ BOOL CreateUserProcess(const char* lpszFileName)
 	return bRet;
 }
 //以服务类程序启动的入口函数，并做一些测试动作
-// 全局变量
 char g_szServiceName[MAX_PATH] = "CreateProcessAsUser_Test.exe";    // 服务名称 
 SERVICE_STATUS g_ServiceStatus = { 0 };
 SERVICE_STATUS_HANDLE g_ServiceStatusHandle = { 0 };
@@ -212,45 +243,127 @@ void __stdcall ServiceMain(DWORD dwArgc, char* lpszArgv)
 	DoTask();
 }
 
-int main()
+void test_run_service()
 {
-	//测试普通应用程序启动进程方式
-	//BOOL bRet = FALSE;
-	//bRet = WinExec_Test("C:\\workspaceTest\\PEview\\PEview.exe", SW_SHOWNORMAL);
-	//if (bRet)
-	//{
-	//	printf("WinExec_Test Run OK.\n");
-	//}
-	//else
-	//{
-	//	printf("WinExec_Test Run ERROR.\n");
-	//}
-	//bRet = ShellExecute_Test("C:\\workspaceTest\\PEview\\PEview.exe", SW_SHOWNORMAL);
-	//if (bRet)
-	//{
-	//	printf("ShellExecute_Test Run OK.\n");
-	//}
-	//else
-	//{
-	//	printf("ShellExecute_Test Run ERROR.\n");
-	//}
-	//bRet = CreateProcess_Test("C:\\workspaceTest\\PEview\\PEview.exe", SW_SHOWNORMAL);
-	//if (bRet)
-	//{
-	//	printf("CreateProcess_Test Run OK.\n");
-	//}
-	//else
-	//{
-	//	printf("CreateProcess_Test Run ERROR.\n");
-	//}
-
-	//system("pause");
-
-	//测试服务类程序启动进程方式
 	//注册函数入口为服务类程序的函数入口
 	SERVICE_TABLE_ENTRY stDispatchTable[] = { { g_szServiceName, (LPSERVICE_MAIN_FUNCTION)ServiceMain }, { NULL, NULL } };
 	::StartServiceCtrlDispatcher(stDispatchTable);
+}
 
+/**
+ * 内存加载
+ * 很多恶意程序有模拟PE加载器功能，把DLL或者exe等PE文件从内存中加载执行
+ * 不需要通过LoadLibrary等API操作，可以躲过杀软检测
+ */
+ //例子为加载DLL和EXE两种文件，原理基本一样，区别在于exe不需要重定位表也能运行，另外dll需要构造入口函数DllMain
+#include "MmLoadDll.h"
+int test_load_dll()
+{
+	char szFileName[MAX_PATH] = "C:\\workspaceKernel\\HackTechLearning\\x64\\Debug\\TestDll.dll";
+
+	// 打开DLL文件并获取DLL文件大小
+	HANDLE hFile = ::CreateFile(szFileName, GENERIC_READ | GENERIC_WRITE,
+		FILE_SHARE_READ | FILE_SHARE_WRITE, NULL, OPEN_EXISTING,
+		FILE_ATTRIBUTE_ARCHIVE, NULL);
+	if (INVALID_HANDLE_VALUE == hFile)
+	{
+		DWORD ret = ::GetLastError();
+		return 1;
+	}
+	DWORD dwFileSize = ::GetFileSize(hFile, NULL);
+	// 申请动态内存并读取DLL到内存中
+	BYTE* lpData = new BYTE[dwFileSize];
+	if (NULL == lpData)
+	{
+		return 2;
+	}
+	DWORD dwRet = 0;
+	::ReadFile(hFile, lpData, dwFileSize, &dwRet, NULL);
+
+	// 将内存DLL加载到程序中
+	LPVOID lpBaseAddress = MmLoadLibrary(lpData, dwFileSize);
+	if (NULL == lpBaseAddress)
+	{
+		return 3;
+	}
+	printf("DLL加载成功\n");
+
+	// 获取DLL导出函数并调用
+	//typedef BOOL(*typedef_ShowMessage)(char* lpszText, char* lpszCaption);
+	//typedef_ShowMessage ShowMessage = (typedef_ShowMessage)MmGetProcAddress(lpBaseAddress, "ShowMessage");
+	//if (NULL == ShowMessage)
+	//{
+	//	return 4;
+	//}
+	//ShowMessage("I am Demon·Gan\n", "Who Are You");
+
+	// 释放从内存加载的DLL
+	BOOL bRet = MmFreeLibrary(lpBaseAddress);
+	if (FALSE == bRet)
+	{
+		printf("DLL释放失败\n");
+	}
+
+	// 释放
+	delete[] lpData;
+	lpData = NULL;
+	::CloseHandle(hFile);
+}
+#include "MmLoadExe.h"
+int test_load_exe()
+{
+	char szFileName[] = "C:\\workspaceTest\\PEview\\PEview.exe";
+
+	// 打开EXE文件并获取EXE文件大小
+	HANDLE hFile = CreateFile(szFileName, GENERIC_READ | GENERIC_WRITE,
+		FILE_SHARE_READ | FILE_SHARE_WRITE, NULL, OPEN_EXISTING,
+		FILE_ATTRIBUTE_ARCHIVE, NULL);
+	if (INVALID_HANDLE_VALUE == hFile)
+	{
+		return 1;
+	}
+	DWORD dwFileSize = GetFileSize(hFile, NULL);
+	// 申请动态内存并读取DLL到内存中
+	BYTE* pData = new BYTE[dwFileSize];
+	if (NULL == pData)
+	{
+		return 2;
+	}
+	DWORD dwRet = 0;
+	::ReadFile(hFile, pData, dwFileSize, &dwRet, NULL);
+	CloseHandle(hFile);
+
+	// 判断有无重定位表
+	if (FALSE == IsExistRelocationTable(pData))
+	{
+		printf("[FALSE] IsExistRelocationTable\n");
+		system("pause");
+		return 0;
+	}
+	// 将内存DLL加载到程序中
+	LPVOID lpBaseAddress = MmRunExe(pData, dwFileSize);
+	if (NULL == lpBaseAddress)
+	{
+		return 3;
+	}
+
+}
+
+int main()
+{
+	//测试普通应用程序启动进程方式
+	//test_run_proc();
+
+	//测试服务类程序启动进程方式
+	//test_run_service();
+
+	//测试加载dll
+	//test_load_dll();
+
+	//测试加载exe
+	//test_load_exe();
+
+	system("pause");
 	return 0;
 }
 

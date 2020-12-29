@@ -5,6 +5,7 @@
 #include "ServiceOperate.h"
 /**
  * 将程序以服务启动
+ * 需要管理员身份运行
  */
 
 int main()

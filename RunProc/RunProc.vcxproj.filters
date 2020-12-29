@@ -18,5 +18,19 @@
     <ClCompile Include="RunProc.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="MmLoadDll.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="MmLoadExe.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="MmLoadDll.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="MmLoadExe.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
