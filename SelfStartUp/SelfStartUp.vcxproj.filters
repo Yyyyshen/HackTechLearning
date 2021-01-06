@@ -18,5 +18,13 @@
     <ClCompile Include="SelfStartUp.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="MyTaskSchedule.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="MyTaskSchedule.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
