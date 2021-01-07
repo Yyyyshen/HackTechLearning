@@ -17,6 +17,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ServiceLoader", "ServiceLoa
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "SelfStartUp", "SelfStartUp\SelfStartUp.vcxproj", "{01826574-ACBD-43E7-9BB9-C052EF262812}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "PrivilegeEscalating", "PrivilegeEscalating\PrivilegeEscalating.vcxproj", "{903D8D3A-996A-4C78-A2A8-231A7F6FBBF2}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -81,6 +83,14 @@ Global
 		{01826574-ACBD-43E7-9BB9-C052EF262812}.Release|x64.Build.0 = Release|x64
 		{01826574-ACBD-43E7-9BB9-C052EF262812}.Release|x86.ActiveCfg = Release|Win32
 		{01826574-ACBD-43E7-9BB9-C052EF262812}.Release|x86.Build.0 = Release|Win32
+		{903D8D3A-996A-4C78-A2A8-231A7F6FBBF2}.Debug|x64.ActiveCfg = Debug|x64
+		{903D8D3A-996A-4C78-A2A8-231A7F6FBBF2}.Debug|x64.Build.0 = Debug|x64
+		{903D8D3A-996A-4C78-A2A8-231A7F6FBBF2}.Debug|x86.ActiveCfg = Debug|Win32
+		{903D8D3A-996A-4C78-A2A8-231A7F6FBBF2}.Debug|x86.Build.0 = Debug|Win32
+		{903D8D3A-996A-4C78-A2A8-231A7F6FBBF2}.Release|x64.ActiveCfg = Release|x64
+		{903D8D3A-996A-4C78-A2A8-231A7F6FBBF2}.Release|x64.Build.0 = Release|x64
+		{903D8D3A-996A-4C78-A2A8-231A7F6FBBF2}.Release|x86.ActiveCfg = Release|Win32
+		{903D8D3A-996A-4C78-A2A8-231A7F6FBBF2}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
