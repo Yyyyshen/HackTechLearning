@@ -7,7 +7,7 @@
 /**
  * 常见注入方式
  * 全局钩子
- * 远线程猴子
+ * 远线程钩子
  * 突破session 0隔离的远线程注入
  * APC注入
  */
@@ -414,17 +414,17 @@ int main()
 	//SetGlobalHook();
 	//bRet = CreateRemoteThreadInjectDll(19788, "C:\\workspaceKernel\\HackTechLearning\\x64\\Debug\\TestDll.dll");
 	//bRet = ZwCreateThreadExInjectDll(10168, "C:\\workspaceKernel\\HackTechLearning\\x64\\Debug\\TestDll.dll");
-	bRet = APCInjectDll("explorer.exe", "C:\\workspaceKernel\\HackTechLearning\\x64\\Debug\\TestDll.dll");
-	if (bRet)
-	{
-		//注入方法执行成功但dll没有启动，调试发现内存中路径前有两个问号,可能是从属性页面复制过来多出来的BOM头，不可见
-		//然后导致一直找不到模块，大坑
-		std::cout << "Inject OK.\n";
-	}
-	else
-	{
-		std::cout << "Inject ERROR.\n";
-	}
+	//bRet = APCInjectDll("explorer.exe", "C:\\workspaceKernel\\HackTechLearning\\x64\\Debug\\TestDll.dll");
+	//if (bRet)
+	//{
+	//	//注入方法执行成功但dll没有启动，调试发现内存中路径前有两个问号,可能是从属性页面复制过来多出来的BOM头，不可见
+	//	//然后导致一直找不到模块，大坑
+	//	std::cout << "Inject OK.\n";
+	//}
+	//else
+	//{
+	//	std::cout << "Inject ERROR.\n";
+	//}
 	//LoadLibraryA("C:\\workspaceKernel\\HackTechLearning\\x64\\Debug\\TestDll.dll");
 	////加载dll过程出错，GetLastError 返回126 用单斜杠路径找不到模块，改为双斜杠即可 0x00007ff7738737bd
 	//auto error = GetLastError();

@@ -7,10 +7,10 @@
  * 隐藏及伪装技术
  */
 
-/**
- * 进程伪装
- * 修改进程信息
- */
+ /**
+  * 进程伪装
+  * 修改进程信息
+  */
 #include "DisguiseProcess.h"
 void test_fake()
 {
@@ -83,11 +83,62 @@ void test_shell()
 	system("pause");
 }
 
+/**
+ * 进程隐藏
+ * 通过inline HOOK API技术，获取API地址，修改前几个字节写入一个跳转指令，使程序跳转到其他函数
+ */
+void test_hook()
+{
+	// 加载DLL并获取句柄
+	HMODULE hDll = ::LoadLibrary("C:\\workspaceKernel\\HackTechLearning\\Debug\\FakeOrHide_HOOKDLL.dll");
+	if (NULL == hDll)
+	{
+		printf("%s error[%d]\n", "LoadLibrary", ::GetLastError());
+	}
+	printf("Load Library OK.\n");
+
+	// 设置全局钩子
+	typedef HHOOK(*typedef_SetHook)();
+	typedef_SetHook SetHook = (typedef_SetHook)::GetProcAddress(hDll, "SetHook");
+	if (NULL == SetHook)
+	{
+		printf("GetProcAddress Error[%d]\n", ::GetLastError());
+	}
+	HHOOK hHook = SetHook(); //TODO：调用时发生不匹配导致栈里边的ESP不正常
+	if (NULL == hHook)
+	{
+		printf("%s error[%d]\n", "SetWindowsHookEx", ::GetLastError());
+	}
+	printf("Set Windows Hook OK.\n");
+	system("pause");
+	// 卸载全局钩子
+	typedef BOOL(*typedef_UnsetHook)(HHOOK);
+	typedef_UnsetHook UnsetHook = (typedef_UnsetHook)::GetProcAddress(hDll, "UnsetHook");
+	if (NULL == UnsetHook)
+	{
+		printf("GetProcAddress Error[%d]\n", ::GetLastError());
+	}
+	if (FALSE == UnsetHook(hHook))
+	{
+		printf("%s error[%d]\n", "UnhookWindowsHookE", ::GetLastError());
+	}
+	printf("Unhook Windows Hook OK.\n");
+	// 卸载DLL
+	::FreeLibrary(hDll);
+
+	system("pause");
+}
+
 int main()
 {
 	//测试进程信息修改
 	//test_fake();
 
+	//测试傀偶进程写入shellcode
+	//test_shell();
+
+	//测试隐藏进程，通过全局钩子注入DLL方式，DLL程序在另一个项目FakeOrHide_HOOKDLL中
+	test_hook();
 
 	return 0;
 }
