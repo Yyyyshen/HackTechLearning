@@ -6,9 +6,23 @@
 #include <objbase.h>
 #include <strsafe.h>
 
+/**
+ * 
+要实现BypassUAC执行命令的COM组件，我们可以总结为两点。
+Elevation属性中的Enabled跟Auto Approval为True；
+COM组件中的接口存在可以执行命令，如ICMLuaUtil的ShellExec。
 
-#define CLSID_CMSTPLUA                     L"{3E5FC7F9-9A51-4367-9063-A120244FBEC7}"
-#define IID_ICMLuaUtil                     L"{6EDD6D74-C007-4E75-B76A-E5740995E24C}"
+其中，如何寻找可利用的COM组件：
+接下来我们需要快速的寻找到具备这两点的COM组件，一种方法是使用oleviewdotnet，一个一个的去看
+最好的方式其实是通过编程实现对你当前机器所有的COM组件进行搜索，然后去找这个相应属性，目前已经有这样的轮子可以直接用。
+使用UACME项目中的Yuubari
+编译好二进制文件UacInfo64.exe，运行会在同目录下生成一个uac18363.log文件，记录其输出的结果。
+使用UacInfo64.exe得到的不光是我们需要的COM组件，它会把一些其他的信息一起寻找并输出，只需要UacInfo64.exe就可以把系统上所有支持auto-elevate的都找出来。
+这里使用之前提到的cmstplua进行搜索，3e5fc7f9-9a51-4367-9063-a120244fbec7，可以看到Autoelevated COM objects组件
+
+ */
+#define CLSID_CMSTPLUA                     L"{3E5FC7F9-9A51-4367-9063-A120244FBEC7}" /*自动提升 CMSTPLUA COM 接口*/
+#define IID_ICMLuaUtil                     L"{6EDD6D74-C007-4E75-B76A-E5740995E24C}" /*cmlua shellexec方法*/
 
 
 typedef interface ICMLuaUtil ICMLuaUtil;
