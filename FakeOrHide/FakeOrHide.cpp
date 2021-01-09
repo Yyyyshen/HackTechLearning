@@ -98,13 +98,14 @@ void test_hook()
 	printf("Load Library OK.\n");
 
 	// 设置全局钩子
-	typedef HHOOK(*typedef_SetHook)();
+	typedef HHOOK(WINAPI* typedef_SetHook)();
 	typedef_SetHook SetHook = (typedef_SetHook)::GetProcAddress(hDll, "SetHook");
 	if (NULL == SetHook)
 	{
 		printf("GetProcAddress Error[%d]\n", ::GetLastError());
+		return;
 	}
-	HHOOK hHook = SetHook(); //TODO：调用时发生不匹配导致栈里边的ESP不正常
+	HHOOK hHook = SetHook();
 	if (NULL == hHook)
 	{
 		printf("%s error[%d]\n", "SetWindowsHookEx", ::GetLastError());
@@ -129,6 +130,27 @@ void test_hook()
 	system("pause");
 }
 
+/**
+ * DLL劫持
+ * 可执行文件运行时，加载器分析可执行模块的输入表，设法找出需要的DLL
+ * 由于输入表中只含有DLL名而没有路径名，因此必须在磁盘中搜索，
+ * 顺序为；程序所在目录-》系统目录-》16为系统目录-》Windows目录-》当前目录->Path环境变量中的目录
+ * 利用这个特性，可以在当前程序目录下伪造一个同名DLL，提供同样的输出表，并使每个输出函数转向真正的系统DLL
+ * 程序在调用该DLL时会先调用伪造的DLL，完成相关动作后，在跳到原DLL里执行
+ * 
+ * 两种方式：
+ * 直接转发- 通过预处理指令完成函数转发
+ * 调用函数- 通过LoadLibrary和GetProcAddress函数加载原DLL并获取函数地址后跳转执行
+ */
+//直接转发使用预处理指令
+//#pragma comment(linker,"/EXPORT:entryname[,@ordinal[,NONAME]][,DATA]")
+//例如：转发MessageBoxA函数
+//#pragma comment(linker,"EXPORT:MessageBoxAFake=user32.MessageBoxA")
+void test_dll()
+{
+	//见DllHijackDemo.cpp,放在dll程序中使用
+}
+
 int main()
 {
 	//测试进程信息修改
@@ -138,7 +160,10 @@ int main()
 	//test_shell();
 
 	//测试隐藏进程，通过全局钩子注入DLL方式，DLL程序在另一个项目FakeOrHide_HOOKDLL中
-	test_hook();
+	//test_hook();
+
+	//测试dll劫持
+	test_dll();
 
 	return 0;
 }

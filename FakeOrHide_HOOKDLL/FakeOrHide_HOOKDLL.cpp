@@ -24,6 +24,7 @@ LRESULT CALLBACK GetMsgProc(
 	return ::CallNextHookEx(g_hHook, code, wParam, lParam);
 }
 
+//需要def文件显式导出函数
 
 // 设置全局钩子
 HHOOK SetHook()

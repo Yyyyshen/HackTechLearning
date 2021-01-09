@@ -140,6 +140,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="DisguiseProcess.cpp" />
+    <ClCompile Include="DllHijackDemo.cpp" />
     <ClCompile Include="FakeOrHide.cpp" />
     <ClCompile Include="ReplaceProcess.cpp" />
   </ItemGroup>
