@@ -25,6 +25,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "FakeOrHide_HOOKDLL", "FakeO
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ZIPTech", "ZIPTech\ZIPTech.vcxproj", "{04DA8A4A-997A-47A3-87A4-AD5F3309F3E9}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "EncrypTech", "EncrypTech\EncrypTech.vcxproj", "{E7BE277C-49A5-4CF9-9E99-A0CF509EFAAC}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -121,6 +123,14 @@ Global
 		{04DA8A4A-997A-47A3-87A4-AD5F3309F3E9}.Release|x64.Build.0 = Release|x64
 		{04DA8A4A-997A-47A3-87A4-AD5F3309F3E9}.Release|x86.ActiveCfg = Release|Win32
 		{04DA8A4A-997A-47A3-87A4-AD5F3309F3E9}.Release|x86.Build.0 = Release|Win32
+		{E7BE277C-49A5-4CF9-9E99-A0CF509EFAAC}.Debug|x64.ActiveCfg = Debug|x64
+		{E7BE277C-49A5-4CF9-9E99-A0CF509EFAAC}.Debug|x64.Build.0 = Debug|x64
+		{E7BE277C-49A5-4CF9-9E99-A0CF509EFAAC}.Debug|x86.ActiveCfg = Debug|Win32
+		{E7BE277C-49A5-4CF9-9E99-A0CF509EFAAC}.Debug|x86.Build.0 = Debug|Win32
+		{E7BE277C-49A5-4CF9-9E99-A0CF509EFAAC}.Release|x64.ActiveCfg = Release|x64
+		{E7BE277C-49A5-4CF9-9E99-A0CF509EFAAC}.Release|x64.Build.0 = Release|x64
+		{E7BE277C-49A5-4CF9-9E99-A0CF509EFAAC}.Release|x86.ActiveCfg = Release|Win32
+		{E7BE277C-49A5-4CF9-9E99-A0CF509EFAAC}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
