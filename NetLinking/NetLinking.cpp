@@ -67,13 +67,46 @@ void udp_test()
 	}
 }
 
+/**
+ * FTP上传下载
+ * 微软提供了WinInet网络库，简化了网络协议的编程
+ */
+#include "WinInet_Ftp.h"
+void ftp_upload()
+{
+	if (FALSE == FTPUpload("ftp://admin:123456789@192.168.0.1/myftpuploadtest.txt", (BYTE*)"Hello Wolrd", 12))
+	{
+		printf("FTP Upload Error.\n");
+	}
+
+	printf("FTP Upload OK.\n");
+	system("pause");
+}
+void ftp_download()
+{
+	BYTE* pDownloadData = NULL;
+	DWORD dwDownloadDataSize = 0;
+	// 下载
+	if (FALSE == FTPDownload("ftp://admin:123456789@192.168.0.1/Flower520.zip", &pDownloadData, &dwDownloadDataSize))
+	{
+		printf("FTP Download Error!\n");
+	}
+	// 将数据保存为文件
+	Ftp_SaveToFile("myftpdownloadtest.zip", pDownloadData, dwDownloadDataSize);
+	// 释放内存
+	delete[]pDownloadData;
+	pDownloadData = NULL;
+	printf("FTP Download OK.\n");
+	system("pause");
+}
+
 int main()
 {
 	//测试tcp连接
 	//tcp_client();
 
 	//测试udp
-	udp_test();
+	//udp_test();
 
 	return 0;
 }
