@@ -1,6 +1,6 @@
 ﻿// NetLinking.cpp : 此文件包含 "main" 函数。程序执行将在此处开始并结束。
 //
-
+#define _CRT_SECURE_NO_WARNINGS
 #include <iostream>
 
 /**
@@ -32,10 +32,48 @@ void tcp_client()
 	}
 }
 
+/**
+ * UDP
+ * 不需要建立连接，两端bind端口后直接向目标发送数据
+ */
+#include "UDPTest.h"
+
+void udp_test()
+{
+	char szIp[MAX_PATH] = { 0 };
+	int iPort = 0;
+	// 输入程序UDP绑定的IP和端口
+	printf("Input IP and Port:\n");
+	scanf("%s%d", szIp, &iPort);
+	getchar();
+
+	// 绑定地址
+	if (FALSE == Bind(szIp, iPort))
+	{
+		printf("Bind Error.\n");
+	}
+	printf("Bind OK.\n");
+
+	// 输入发送数据目的主机的IP和端口
+	printf("Input Dest IP and Dest Port:\n");
+	scanf("%s%d", szIp, &iPort);
+	getchar();
+	// 发送数据
+	char szBuf[MAX_PATH] = { 0 };
+	while (TRUE)
+	{
+		gets_s(szBuf);
+		SendMsg(szBuf, szIp, iPort);
+	}
+}
+
 int main()
 {
 	//测试tcp连接
-	tcp_client();
+	//tcp_client();
+
+	//测试udp
+	udp_test();
 
 	return 0;
 }

@@ -141,9 +141,11 @@
   <ItemGroup>
     <ClCompile Include="NetLinking.cpp" />
     <ClCompile Include="TcpClient.cpp" />
+    <ClCompile Include="UDPTest.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="TcpClient.h" />
+    <ClInclude Include="UDPTest.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
