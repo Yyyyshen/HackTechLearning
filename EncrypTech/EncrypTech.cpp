@@ -790,6 +790,14 @@ void test_crypto_rsa()
 	system("pause");
 }
 
+/**
+ * git上传超过100M文件失败，可以安装git-lfs突破限制
+ * 也可以取消之前提交中大文件
+ * 使用如下命令：
+ * git filter-branch -f --index-filter 'git rm --cached --ignore-unmatch YOUR-FILE'
+ * git commit --amend
+ * git push 重新提交
+ */
 int main()
 {
 	//hash
