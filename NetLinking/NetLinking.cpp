@@ -100,6 +100,62 @@ void ftp_download()
 	system("pause");
 }
 
+/**
+ * 基于WinInet的HTTPS上传下载
+ */
+#include "HttpsInet.h"
+void https_upload()
+{
+	char szHttpsUploadUrl[] = "https://192.168.28.137/mytest1.asp?file=520.zip";
+	char szHttpsUploadFileName[] = "C:\\Users\\DemonGan\\Desktop\\520.zip";
+	BYTE* pHttpsUploadData = NULL;
+	DWORD dwHttpsUploadDataSize = 0;
+	DWORD dwRets = 0;
+	// 打开文件
+	HANDLE hFiles = ::CreateFile(szHttpsUploadFileName, GENERIC_READ | GENERIC_WRITE,
+		FILE_SHARE_READ | FILE_SHARE_WRITE, NULL, OPEN_EXISTING,
+		FILE_ATTRIBUTE_ARCHIVE, NULL);
+	if (INVALID_HANDLE_VALUE == hFiles)
+	{
+		return;
+	}
+	// 获取文件大小
+	dwHttpsUploadDataSize = ::GetFileSize(hFiles, NULL);
+	// 读取文件数据
+	pHttpsUploadData = new BYTE[dwHttpsUploadDataSize];
+	::ReadFile(hFiles, pHttpsUploadData, dwHttpsUploadDataSize, &dwRets, NULL);
+	dwHttpsUploadDataSize = dwRets;
+	// 上传数据
+	if (FALSE == Https_Upload(szHttpsUploadUrl, pHttpsUploadData, dwHttpsUploadDataSize))
+	{
+		return;
+	}
+	// 释放内存
+	delete[]pHttpsUploadData;
+	pHttpsUploadData = NULL;
+	::CloseHandle(hFiles);
+
+	system("pause");
+}
+void https_download()
+{
+	char szHttpsDownloadUrl[] = "https://download.microsoft.com/download/0/2/3/02389126-40A7-46FD-9D83-802454852703/vc_mbcsmfc.exe";
+	BYTE* pHttpsDownloadData = NULL;
+	DWORD dwHttpsDownloadDataSize = 0;
+	// HTTPS下载 
+	if (FALSE == Https_Download(szHttpsDownloadUrl, &pHttpsDownloadData, &dwHttpsDownloadDataSize))
+	{
+		return;
+	}
+	// 将数据保存成文件
+	Https_SaveToFile("https_downloadsavefile.exe", pHttpsDownloadData, dwHttpsDownloadDataSize);
+	// 释放内存
+	delete[]pHttpsDownloadData;
+	pHttpsDownloadData = NULL;
+
+	system("pause");
+}
+
 int main()
 {
 	//测试tcp连接

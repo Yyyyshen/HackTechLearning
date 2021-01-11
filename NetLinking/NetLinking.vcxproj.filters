@@ -27,6 +27,9 @@
     <ClCompile Include="WinInet_Ftp.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="HttpsInet.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="TcpClient.h">
@@ -36,6 +39,9 @@
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="WinInet_Ftp.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="HttpsInet.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>
