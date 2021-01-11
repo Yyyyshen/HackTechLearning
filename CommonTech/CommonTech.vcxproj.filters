@@ -30,6 +30,15 @@
     <ClCompile Include="FileSearch.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="RawInputTest.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="PipeCmd.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="MonitorFile.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="EnumInfo.h">
@@ -42,6 +51,18 @@
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="ScreenCapture.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="RawInputTest.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="VirtualKeyToAscii.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="PipeCmd.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="MonitorFile.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>

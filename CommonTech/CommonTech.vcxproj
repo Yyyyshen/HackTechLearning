@@ -143,13 +143,20 @@
     <ClCompile Include="CommonTech.cpp" />
     <ClCompile Include="EnumInfo.cpp" />
     <ClCompile Include="FileSearch.cpp" />
+    <ClCompile Include="MonitorFile.cpp" />
+    <ClCompile Include="PipeCmd.cpp" />
+    <ClCompile Include="RawInputTest.cpp" />
     <ClCompile Include="ScreenCapture.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="BmpSave_CImage.h" />
     <ClInclude Include="EnumInfo.h" />
     <ClInclude Include="FileSearch.h" />
+    <ClInclude Include="MonitorFile.h" />
+    <ClInclude Include="PipeCmd.h" />
+    <ClInclude Include="RawInputTest.h" />
     <ClInclude Include="ScreenCapture.h" />
+    <ClInclude Include="VirtualKeyToAscii.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
