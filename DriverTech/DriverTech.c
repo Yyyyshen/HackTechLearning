@@ -9,6 +9,14 @@
  * 一般和恶意程序结合使用，通过加载特殊的驱动，修改系统内核达到隐藏目的
  */
 
+/**
+ * 驱动调试比较麻烦
+ * 先是bcdedit命令对被调试机进行设置，并且在msconfig中高级选项打开调试、串口
+ * 对两个虚拟机设置串口属性，苹果pd虚拟机是用插口来表示的（从自己的理解上，插口就是串口下面分出来的，都属于同一个com口），被调试机为客户端、调试机为服务端
+ * 一定要关闭两端防火墙，不然配置好了也一直连不上
+ * 生成和系统架构要对应
+ */
+
 VOID DriverUnload(PDRIVER_OBJECT DriverObject)
 {
 	if (DriverObject != NULL)
@@ -31,13 +39,6 @@ NTSTATUS DriverEntry(PDRIVER_OBJECT DriverObject, PUNICODE_STRING RegistryPath)
 		DbgPrint("[%ws]Driver Object Address:%p\n", __FUNCTIONW__, DriverObject);
 		DriverObject->DriverUnload = DriverUnload;
 	}
-
-	WCHAR strBuf[128] = { 0 };
-
-	UNICODE_STRING uFirstString = { 0 };
-	RtlInitEmptyUnicodeString(&uFirstString, strBuf, sizeof(strBuf));
-	RtlUnicodeStringCopyString(&uFirstString, L"Hello,Kernel\n"); //只能在PASSIVE_LEVEL下使用
-	DbgPrint("String:%wZ", &uFirstString);
 
 	return STATUS_SUCCESS;
 }
