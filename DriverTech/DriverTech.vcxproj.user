@@ -9,5 +9,6 @@
     <ScriptName>Microsoft.DriverKit.DefaultDriverPackageInstallationClass.PerformDefaultDriverPackageInstallation</ScriptName>
     <HardwareIdString>
     </HardwareIdString>
+    <SignMode>Off</SignMode>
   </PropertyGroup>
 </Project>
