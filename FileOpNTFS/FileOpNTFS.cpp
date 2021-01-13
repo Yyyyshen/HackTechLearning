@@ -49,5 +49,6 @@
 
 int main()
 {
-	std::cout << "Hello World!\n";
+	test_ntfs();
+	return 0;
 }
