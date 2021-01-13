@@ -31,3 +31,6 @@
 /FileOpNTFS/x64
 /RegOpDriver/x64
 /RegOpHIVE/x64
+/HookDriver/x64
+/HookDriver/Debug
+/HookKeyBoardDriver/x64
