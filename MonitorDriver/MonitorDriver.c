@@ -86,6 +86,10 @@ VOID TESTOBJ(PDRIVER_OBJECT pDriverObject)
 	SetThreadCallbacks();
 }
 
+/**
+ * 文件监控和网络监控在其他项目中
+ * 其中文件监控使用了Minifilter框架，VS中有现成模板，例子在项目：MonitorFileDriver
+ */
 
 
 VOID DriverUnload(PDRIVER_OBJECT pDriverObject)
