@@ -148,6 +148,10 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="MonitorDriver.c" />
+    <ClCompile Include="NotifyRoutine.c" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="NotifyRoutine.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
