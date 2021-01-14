@@ -30,9 +30,27 @@
     <ClCompile Include="NotifyRoutine.c">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="LoadImageNotify.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="NotifyRoutine_Reg.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="NotifyRoutine_Obj.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="NotifyRoutine.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="LoadImageNotify.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="NotifyRoutine_Reg.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="NotifyRoutine_Obj.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

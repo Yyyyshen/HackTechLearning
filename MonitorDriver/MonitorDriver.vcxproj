@@ -147,11 +147,17 @@
     <FilesToPackage Include="$(TargetPath)" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="LoadImageNotify.c" />
     <ClCompile Include="MonitorDriver.c" />
     <ClCompile Include="NotifyRoutine.c" />
+    <ClCompile Include="NotifyRoutine_Obj.c" />
+    <ClCompile Include="NotifyRoutine_Reg.c" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="LoadImageNotify.h" />
     <ClInclude Include="NotifyRoutine.h" />
+    <ClInclude Include="NotifyRoutine_Obj.h" />
+    <ClInclude Include="NotifyRoutine_Reg.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
