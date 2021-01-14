@@ -88,7 +88,11 @@ VOID TESTOBJ(PDRIVER_OBJECT pDriverObject)
 
 /**
  * 文件监控和网络监控在其他项目中
+ * 
  * 其中文件监控使用了Minifilter框架，VS中有现成模板，例子在项目：MonitorFileDriver
+ * 
+ * 网络监控需要使用WFP框架，VISTA之后的系统，系统防火墙的过滤钩子不再适用，都是用WFP
+ * 过滤器引擎时WFP核心组件，用来过滤TCP/IP数据，例子在项目：MonitorNetDriver
  */
 
 
