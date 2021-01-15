@@ -1,10 +1,10 @@
-#include "ntddk.h"
-
 /**
  * 反监控技术
  * 恶意程序和杀软都会有监控操作
  * 在相互对抗中，可以暴力摘除对方的监控回调
  */
+
+#include "EnumRemove_O.h" //反对象监控
 
  /**
   * 反进程监控
@@ -42,7 +42,29 @@ VOID TESTANTIMODULE()
 /**
  * 反注册表监控
  * 注册表回调函数存储在一个名为CallbackListHead表头的双向链表结构里
+ * 也类似上面三种方式
  */
+#include "EnumRemove_R.h"
+VOID TESTANTIREG()
+{
+	EnumCallback();
+}
+
+/**
+ * 反对象监控
+ * 对线回调函数存储在名为CallbackList表头的双向链表中
+ * 依然是类似的方式，但相对更容易些，可以直接从POBJECT_TYPE数据类型中获取表头地址
+ */
+//#include "EnumRemove_O.h"		放最前面防止重定义报错
+VOID TESTANTIOBJ()
+{
+	// 获取进程对象类型回调
+	EnumProcessObCallback();
+
+	// 获取线程对象类型回调
+	EnumThreadObCallback();
+}
+
 
 VOID DriverUnload(PDRIVER_OBJECT pDriverObject)
 {
@@ -71,7 +93,7 @@ NTSTATUS DriverEntry(_In_ PDRIVER_OBJECT pDriverObject, _In_ PUNICODE_STRING Reg
 	//反进程监控
 	TESTANTIPROCESS();
 
-	//
+	//都是类似的方式
 
 
 	DbgPrint("Leave CreateDevice\n");

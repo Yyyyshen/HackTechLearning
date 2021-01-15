@@ -36,6 +36,12 @@
     <ClCompile Include="EnumRemove_M.c">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="EnumRemove_R.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="EnumRemove_O.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="EnumRemove.h">
@@ -45,6 +51,12 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="EnumRemove_M.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="EnumRemove_R.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="EnumRemove_O.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

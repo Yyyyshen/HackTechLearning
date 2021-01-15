@@ -150,11 +150,15 @@
     <ClCompile Include="AntiMonitorDriver.c" />
     <ClCompile Include="EnumRemove.c" />
     <ClCompile Include="EnumRemove_M.c" />
+    <ClCompile Include="EnumRemove_O.c" />
+    <ClCompile Include="EnumRemove_R.c" />
     <ClCompile Include="EnumRemove_T.c" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="EnumRemove.h" />
     <ClInclude Include="EnumRemove_M.h" />
+    <ClInclude Include="EnumRemove_O.h" />
+    <ClInclude Include="EnumRemove_R.h" />
     <ClInclude Include="EnumRemove_T.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
