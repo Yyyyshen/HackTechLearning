@@ -65,6 +65,17 @@ VOID TESTANTIOBJ()
 	EnumThreadObCallback();
 }
 
+/**
+ * 反Minifilter文件监控
+ * 枚举Minifilter驱动程序回调，有直接的内核函数FltEnumerateFilters，要注意不同系统下结构体不同
+ * 需要使用fltKernel.h及导入FltMgr.lib
+ */
+#include "EnumRemove_F.h"
+VOID TESTANTIMINIFILTER()
+{
+	EnumCallback_F();
+}
+
 
 VOID DriverUnload(PDRIVER_OBJECT pDriverObject)
 {

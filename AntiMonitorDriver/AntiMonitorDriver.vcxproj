@@ -138,6 +138,7 @@
     </ClCompile>
     <Link>
       <TreatLinkerWarningAsErrors>false</TreatLinkerWarningAsErrors>
+      <AdditionalDependencies>FltMgr.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
@@ -149,6 +150,7 @@
   <ItemGroup>
     <ClCompile Include="AntiMonitorDriver.c" />
     <ClCompile Include="EnumRemove.c" />
+    <ClCompile Include="EnumRemove_F.c" />
     <ClCompile Include="EnumRemove_M.c" />
     <ClCompile Include="EnumRemove_O.c" />
     <ClCompile Include="EnumRemove_R.c" />
@@ -156,6 +158,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="EnumRemove.h" />
+    <ClInclude Include="EnumRemove_F.h" />
     <ClInclude Include="EnumRemove_M.h" />
     <ClInclude Include="EnumRemove_O.h" />
     <ClInclude Include="EnumRemove_R.h" />
