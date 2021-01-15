@@ -35,13 +35,13 @@
     </ProjectConfiguration>
   </ItemGroup>
   <PropertyGroup Label="Globals">
-    <ProjectGuid>{B6E53EC0-B0BD-4E9A-98D3-BDCE70B9CF5A}</ProjectGuid>
+    <ProjectGuid>{0C15CD24-F9D6-4AE5-B533-9AB9FBA033FB}</ProjectGuid>
     <TemplateGuid>{dd38f7fc-d7bd-488b-9242-7d8754cde80d}</TemplateGuid>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <MinimumVisualStudioVersion>12.0</MinimumVisualStudioVersion>
     <Configuration>Debug</Configuration>
     <Platform Condition="'$(Platform)' == ''">Win32</Platform>
-    <RootNamespace>CommonTechDriver</RootNamespace>
+    <RootNamespace>TDINetDriver</RootNamespace>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
@@ -132,32 +132,11 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|ARM64'">
     <DebuggerFlavor>DbgengKernelDebugger</DebuggerFlavor>
   </PropertyGroup>
-  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <ClCompile>
-      <TreatWarningAsError>false</TreatWarningAsError>
-    </ClCompile>
-    <Link>
-      <TreatLinkerWarningAsErrors>false</TreatLinkerWarningAsErrors>
-    </Link>
-  </ItemDefinitionGroup>
   <ItemGroup>
-    <Inf Include="CommonTechDriver.inf" />
+    <Inf Include="TDINetDriver.inf" />
   </ItemGroup>
   <ItemGroup>
     <FilesToPackage Include="$(TargetPath)" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClCompile Include="CommonTechDriver.c" />
-    <ClCompile Include="EnumDriver.c" />
-    <ClCompile Include="EnumProcess.c" />
-    <ClCompile Include="GetMiProcessLoaderEntry.c" />
-    <ClCompile Include="SSDTFunction.c" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="EnumDriver.h" />
-    <ClInclude Include="EnumProcess.h" />
-    <ClInclude Include="GetMiProcessLoaderEntry.h" />
-    <ClInclude Include="SSDTFunction.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

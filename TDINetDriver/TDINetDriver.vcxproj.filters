@@ -19,39 +19,8 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <Inf Include="CommonTechDriver.inf">
+    <Inf Include="TDINetDriver.inf">
       <Filter>Driver Files</Filter>
     </Inf>
-  </ItemGroup>
-  <ItemGroup>
-    <ClCompile Include="CommonTechDriver.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="EnumDriver.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="GetMiProcessLoaderEntry.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="SSDTFunction.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="EnumProcess.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="EnumDriver.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="GetMiProcessLoaderEntry.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="SSDTFunction.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="EnumProcess.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
   </ItemGroup>
 </Project>
