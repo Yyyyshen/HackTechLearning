@@ -48,7 +48,7 @@ NTSTATUS SetFilter(
 	OUT HANDLE *engine);
 
 // Calloutº¯Êý classifyFn
-#if (NTDDI_VERSION >= NTDDI_WIN10)
+#if (NTDDI_VERSION >= NTDDI_WIN10_RS3)
 	VOID NTAPI classifyFn(
 		_In_ const FWPS_INCOMING_VALUES0* inFixedValues,
 		_In_ const FWPS_INCOMING_METADATA_VALUES0* inMetaValues,
@@ -90,7 +90,7 @@ NTSTATUS SetFilter(
 #endif
 
 // Calloutº¯Êý notifyFn
-#if (NTDDI_VERSION >= NTDDI_WIN10)
+#if (NTDDI_VERSION >= NTDDI_WIN10_RS3)
 	NTSTATUS NTAPI notifyFn(
 		_In_ FWPS_CALLOUT_NOTIFY_TYPE notifyType,
 		_In_ const GUID* filterKey,

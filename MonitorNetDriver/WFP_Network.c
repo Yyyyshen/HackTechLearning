@@ -212,7 +212,7 @@ NTSTATUS SetFilter(
 
 
 // Callout函数 classifyFn
-#if (NTDDI_VERSION >= NTDDI_WIN10)
+#if (NTDDI_VERSION >= NTDDI_WIN10_RS3)
 	VOID NTAPI classifyFn(
 		_In_ const FWPS_INCOMING_VALUES0* inFixedValues,
 		_In_ const FWPS_INCOMING_METADATA_VALUES0* inMetaValues,
@@ -280,9 +280,9 @@ NTSTATUS SetFilter(
 	classifyOut->actionType = FWP_ACTION_PERMIT;    
 
 	// 禁止指定进程网络连接
-	if (NULL != wcsstr((PWCHAR)szProcessPath, L"MicrosoftEdge.exe"))
+	if (NULL != wcsstr((PWCHAR)szProcessPath, L"cmd.exe"))
 	{
-		KdPrint(("MicrosoftEdge.exe[FWP_ACTION_BLOCK]\n"));
+		KdPrint(("cmd.exe[FWP_ACTION_BLOCK]\n"));
 		// 拒绝连接
 		classifyOut->actionType = FWP_ACTION_BLOCK;
 		classifyOut->rights = classifyOut->rights & (~FWPS_RIGHT_ACTION_WRITE);
@@ -309,7 +309,7 @@ NTSTATUS SetFilter(
 }
 
 // Callout函数 notifyFn
-#if (NTDDI_VERSION >= NTDDI_WIN10)
+#if (NTDDI_VERSION >= NTDDI_WIN10_RS3)
 	NTSTATUS NTAPI notifyFn(
 		_In_ FWPS_CALLOUT_NOTIFY_TYPE notifyType,
 		_In_ const GUID* filterKey,
