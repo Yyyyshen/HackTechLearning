@@ -39,6 +39,18 @@
     <ClCompile Include="EnumProcess.c">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="ForceKillProcess.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="FileProtect.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="IrpFile.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ForceDelete.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="EnumDriver.h">
@@ -51,6 +63,18 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="EnumProcess.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ForceKillProcess.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="FileProtect.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="IrpFile.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ForceDelete.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

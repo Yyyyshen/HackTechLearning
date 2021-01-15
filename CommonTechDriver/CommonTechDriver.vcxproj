@@ -150,13 +150,21 @@
     <ClCompile Include="CommonTechDriver.c" />
     <ClCompile Include="EnumDriver.c" />
     <ClCompile Include="EnumProcess.c" />
+    <ClCompile Include="FileProtect.c" />
+    <ClCompile Include="ForceDelete.c" />
+    <ClCompile Include="ForceKillProcess.c" />
     <ClCompile Include="GetMiProcessLoaderEntry.c" />
+    <ClCompile Include="IrpFile.c" />
     <ClCompile Include="SSDTFunction.c" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="EnumDriver.h" />
     <ClInclude Include="EnumProcess.h" />
+    <ClInclude Include="FileProtect.h" />
+    <ClInclude Include="ForceDelete.h" />
+    <ClInclude Include="ForceKillProcess.h" />
     <ClInclude Include="GetMiProcessLoaderEntry.h" />
+    <ClInclude Include="IrpFile.h" />
     <ClInclude Include="SSDTFunction.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

@@ -1,59 +1,186 @@
-#include "ntddk.h"
-
+ï»¿
 /**
- * ¶ñÒâ³ÌĞòÔÚÄÚºË²ã³£ÓÃ¼¼ÊõÊ¾Àı
- * °üÀ¨Çı¶¯Òş²Ø¡¢½ø³ÌÒş²Ø¡¢¸üµ×²ãµÄTDIºÍNDISµÈÍøÂçÍ¨ĞÅ
- * »¹ÓĞÎÄ¼ş±£»¤¡¢½ø³Ì±£»¤¡¢½ø³ÌÇ¿É±¡¢ÎÄ¼şÇ¿É¾
+ * æ¶æ„ç¨‹åºåœ¨å†…æ ¸å±‚å¸¸ç”¨æŠ€æœ¯ç¤ºä¾‹
+ * åŒ…æ‹¬é©±åŠ¨éšè—ã€è¿›ç¨‹éšè—ã€æ›´åº•å±‚çš„TDIå’ŒNDISç­‰ç½‘ç»œé€šä¿¡
+ * è¿˜æœ‰æ–‡ä»¶ä¿æŠ¤ã€è¿›ç¨‹ä¿æŠ¤ã€è¿›ç¨‹å¼ºæ€ã€æ–‡ä»¶å¼ºåˆ 
  */
 
+#include "ForceKillProcess.h" //å¼ºæ€è¿›ç¨‹
+
  /**
-  * ¹ıPatchGuardÇı¶¯Òş²Ø
-  * Í¨¹ı¶ÔDRIVER_OBJECT½á¹¹Ìå¶Ô¶ÔÏó½øĞĞ²Ù×÷ÊÇ¶ÔÇı¶¯Á´½øĞĞÕªÁ´ÊµÏÖÇı¶¯Òş²Ø
-  * ĞèÒªÈÆ¹ıPatchGuard£¬»ùÓÚMiProcessLoaderEntryÊµÏÖ
-  * PatchGuard¸ù¾İ¼à¿ØÏµÍ³ÉÏµÄÒ»Ğ©È«¾ÖÊı¾İÀ´ÅĞ¶Ï¹Ø¼üÄÚ´æÊÇ·ñ±»¸ü¸Ä
-  * ¶øMiÕâ¸öº¯ÊıÔÚ²åÈë»òÕª³ıÒ»¸öÁ´±íÄ£¿éÊ±£¬Í¬Ê±»áÉèÖÃPG¼à¿ØµÄÈ«¾ÖÊı¾İ£¬ÕâÑù¾Í²»»á´¥·¢PG¶øµ¼ÖÂÀ¶ÆÁ
-  * 
-  * Õâ¸öÀı×Ó»áÀ¶ÆÁ  system thread exception not handled
-  * ²éÁËÏÂdmpÀ¶ÆÁÈÕÖ¾£¬¾¯¸æĞÅÏ¢£º Unable to load image \SystemRoot\system32\ntoskrnl.exe , Win32 error 0n2
+  * è¿‡PatchGuardé©±åŠ¨éšè—
+  * é€šè¿‡å¯¹DRIVER_OBJECTç»“æ„ä½“å¯¹å¯¹è±¡è¿›è¡Œæ“ä½œæ˜¯å¯¹é©±åŠ¨é“¾è¿›è¡Œæ‘˜é“¾å®ç°é©±åŠ¨éšè—
+  * éœ€è¦ç»•è¿‡PatchGuardï¼ŒåŸºäºMiProcessLoaderEntryå®ç°
+  * PatchGuardæ ¹æ®ç›‘æ§ç³»ç»Ÿä¸Šçš„ä¸€äº›å…¨å±€æ•°æ®æ¥åˆ¤æ–­å…³é”®å†…å­˜æ˜¯å¦è¢«æ›´æ”¹
+  * è€ŒMiè¿™ä¸ªå‡½æ•°åœ¨æ’å…¥æˆ–æ‘˜é™¤ä¸€ä¸ªé“¾è¡¨æ¨¡å—æ—¶ï¼ŒåŒæ—¶ä¼šè®¾ç½®PGç›‘æ§çš„å…¨å±€æ•°æ®ï¼Œè¿™æ ·å°±ä¸ä¼šè§¦å‘PGè€Œå¯¼è‡´è“å±
+  *
+  * è¿™ä¸ªä¾‹å­ä¼šè“å±  system thread exception not handled
+  * æŸ¥äº†ä¸‹dmpè“å±æ—¥å¿—ï¼Œè­¦å‘Šä¿¡æ¯ï¼š Unable to load image \SystemRoot\system32\ntoskrnl.exe , Win32 error 0n2
   */
 #include "EnumDriver.h"
 VOID TESTDRIVERHIDE(PDRIVER_OBJECT pDriverObject)
 {
-	// ±éÀúÇı¶¯Ä£¿é
+	// éå†é©±åŠ¨æ¨¡å—
 	EnumDriver(pDriverObject);
 
-	// Çı¶¯Ä£¿éÒş²Ø(Bypass Patch Guard)
+	// é©±åŠ¨æ¨¡å—éšè—(Bypass Patch Guard)
 	UNICODE_STRING ustrDriverName;
 	RtlInitUnicodeString(&ustrDriverName, L"MySYS.sys");
 	HideDriver_Bypass_PatchGuard(pDriverObject, ustrDriverName);
 }
 
 /**
- * ¹ıPG½ø³ÌÒş²Ø
- * ÀàËÆÇı¶¯Òş²Ø
- * Í¨¹ı±éÀú½ø³Ì½á¹¹EPROCESSÖĞµÄ»î¶¯½ø³ÌË«ÏòÁ´±íActiveProcessLinksÀ´ÊµÏÖÕªÁ´
- * 
- * Ò²ÊÇÒ»ÑùµÄ»áÀ¶ÆÁ£¬¹À¼ÆÈÆ¹ıPGµÄ·½Ê½¹ıÊ±ÁË£¿ÔİÊ±·ÅÒ»·Å
+ * è¿‡PGè¿›ç¨‹éšè—
+ * ç±»ä¼¼é©±åŠ¨éšè—
+ * é€šè¿‡éå†è¿›ç¨‹ç»“æ„EPROCESSä¸­çš„æ´»åŠ¨è¿›ç¨‹åŒå‘é“¾è¡¨ActiveProcessLinksæ¥å®ç°æ‘˜é“¾
+ *
+ * ä¹Ÿæ˜¯ä¸€æ ·çš„ä¼šè“å±ï¼Œä¼°è®¡ç»•è¿‡PGçš„æ–¹å¼è¿‡æ—¶äº†ï¼Ÿæš‚æ—¶æ”¾ä¸€æ”¾
  */
 #include "EnumProcess.h"
 VOID TESTPROCESSHIDE()
 {
-	// ±éÀú½ø³Ì
+	// éå†è¿›ç¨‹
 	EnumProcess();
 
-	// Òş²ØÖ¸¶¨½ø³Ì(Bypass Patch Guard)
+	// éšè—æŒ‡å®šè¿›ç¨‹(Bypass Patch Guard)
 	HideProcess_Bypass_PatchGuard("InstDrv.exe");
 }
 
 /**
- * TDIÍøÂçÍ¨ĞÅ
- * ÄÚÈİÏà¶Ô¶àÒ»Ğ©£¬µ¥¿ªÁËÒ»¸öÏîÄ¿£ºTDINetDriver
+ * TDIç½‘ç»œé€šä¿¡
+ * å†…å®¹ç›¸å¯¹å¤šä¸€äº›ï¼Œå•å¼€äº†ä¸€ä¸ªé¡¹ç›®ï¼šTDINetDriver
  */
 
+ /**
+  * å¼ºåˆ¶ç»“æŸè¿›ç¨‹
+  * é™¤äº†æœ‰ZwTerminateProcesså†…æ ¸å‡½æ•°å’Œè¿›ç¨‹å†…å­˜æ¸…é›¶å‡½æ•°
+  * è¿˜å¯ä»¥ä½¿ç”¨PspTerminateThreadByPointer
+  * çº¿ç¨‹æ—¶è¿›ç¨‹ä¸­æ‰§è¡Œçš„æœ€å°å•ä½ï¼Œæ‰€ä»¥ç»“æŸè¿›ç¨‹ä¸­çš„æ‰€æœ‰çº¿ç¨‹ï¼Œè¿›ç¨‹ä¹Ÿå°±æ²¡æœ‰æ„ä¹‰ï¼Œéšä¹‹ç»“æŸ
+  * Windowsæä¾›äº†PsTerminateSystemThreadå†…æ ¸å‡½æ•°ç»“æŸçº¿ç¨‹ï¼Œä½†ä¼šæˆä¸ºæ€è½¯ç›‘æ§å¯¹è±¡
+  * é€šè¿‡é€†å‘è¯¥å¯¼å‡ºå‡½æ•°ï¼Œå‘ç°å…¶è°ƒç”¨çš„æ˜¯ä¸ºåˆ°å¤„çš„PspTerminateThreadByPointerï¼Œç›¸å¯¹æ›´åº•å±‚äº›ï¼Œä¸å®¹æ˜“è¢«ç›‘æ§
+  */
+  //#include "ForceKillProcess.h" 
+VOID TESTSHUTPROCESS()
+{
+	// å¼ºåˆ¶ç»“æŸæŒ‡å®šè¿›ç¨‹
+	ForceKillProcess((HANDLE)2848);
+}
 
+/**
+ * æ–‡ä»¶ä¿æŠ¤
+ * é€šè¿‡å‘é€IRPä¿¡æ¯æ‰“å¼€æ–‡ä»¶å¹¶è·å–å¥æŸ„ï¼Œä¹‹åä¸å…³é—­è¯¥å¥æŸ„ï¼Œåˆ™ä¸€ç›´ä¿æŒæ‰“å¼€çŠ¶æ€
+ * æ–‡ä»¶å¥æŸ„æ²¡æœ‰é‡Šæ”¾ï¼Œé‚£ä¹ˆä¹Ÿä¸èƒ½åˆ é™¤æ–‡ä»¶ï¼Œå®ç°æ–‡ä»¶é˜²åˆ é™¤
+ *
+ * æ–‡ä»¶æ“ä½œä½¿ç”¨IRPï¼Œéœ€è¦åˆ›å»ºè®¾å¤‡å¯¹è±¡
+ */
+#include "FileProtect.h"
+PFILE_OBJECT g_pFileObject = NULL;
+VOID TESTPROTECTFILE()
+{
+	// ä¿æŠ¤æ–‡ä»¶
+	UNICODE_STRING ustrFileName;
+	RtlInitUnicodeString(&ustrFileName, L"C:\\ChatServer.exe");
+	g_pFileObject = ProtectFile(ustrFileName);
+}
+
+/**
+ * æ–‡ä»¶å¼ºåˆ 
+ * å½“PEæ–‡ä»¶å·²ç»åŠ è½½åˆ°å†…å­˜æ—¶ï¼Œæ­£å¸¸æƒ…å†µä¸‹æ˜¯æ— æ³•åˆ é™¤çš„
+ * å› ä¸ºåˆ é™¤è¿è¡Œçš„æ–‡ä»¶æˆ–è€…åŠ è½½çš„DLLæ—¶ï¼Œä¼šè°ƒç”¨MmFlushImageSectionæ¥æ£€æµ‹æ–‡ä»¶æ˜¯å¦è¿è¡Œ
+ * åŸç†ä¸»è¦æ˜¯æ£€æŸ¥æ–‡ä»¶å¯¹è±¡ä¸­çš„PSECTION_OBJECT_POINTERSç»“æ„æ•°æ®æ¥åˆ¤æ–­æ˜¯å¦å¯ä»¥åˆ é™¤
+ * åœ¨å‘é€IRPåˆ é™¤æ–‡ä»¶æ—¶ï¼ŒåŒæ ·ä¼šåˆ¤æ–­æ–‡ä»¶å±æ€§æ˜¯å¦åªè¯»ï¼Œè‹¥æ˜¯åˆ™ä¼šæ‹’ç»åˆ é™¤æ“ä½œ
+ */
+#include "ForceDelete.h"
+VOID TESTFORCEDELFILE()
+{
+	UNICODE_STRING ustrFileName;
+	RtlInitUnicodeString(&ustrFileName, L"C:\\ChatServer.exe");
+	ForceDeleteFile(ustrFileName);
+}
+
+
+
+
+#define DEV_NAME L"\\Device\\IRP_FILE_DEV_NAME"
+#define SYM_NAME L"\\DosDevices\\IRP_FILE_SYM_NAME"
+#define IOCTL_TEST CTL_CODE(FILE_DEVICE_UNKNOWN, 0x800, METHOD_BUFFERED, FILE_ANY_ACCESS)
 VOID DriverUnload(PDRIVER_OBJECT pDriverObject)
 {
+	DbgPrint("Enter DriverUnload\n");
+
+	// å…³é—­ä¿æŠ¤æ–‡ä»¶
+	//if (g_pFileObject)
+	//{
+	//	UnprotectFile(g_pFileObject);
+	//}
+
+	if (pDriverObject->DeviceObject)
+	{
+		IoDeleteDevice(pDriverObject->DeviceObject);
+	}
+	UNICODE_STRING ustrSymName;
+	RtlInitUnicodeString(&ustrSymName, SYM_NAME);
+	IoDeleteSymbolicLink(&ustrSymName);
+
+	DbgPrint("Leave DriverUnload\n");
 }
+
+NTSTATUS DriverControlHandle(PDEVICE_OBJECT pDevObj, PIRP pIrp)
+{
+	DbgPrint("Enter DriverControlHandle\n");
+	NTSTATUS status = STATUS_SUCCESS;
+	PIO_STACK_LOCATION pIoStackLocation = IoGetCurrentIrpStackLocation(pIrp);
+	ULONG ulInputLen = pIoStackLocation->Parameters.DeviceIoControl.InputBufferLength;
+	ULONG ulOutputLen = pIoStackLocation->Parameters.DeviceIoControl.OutputBufferLength;
+	ULONG ulControlCode = pIoStackLocation->Parameters.DeviceIoControl.IoControlCode;
+	PVOID pBuffer = pIrp->AssociatedIrp.SystemBuffer;
+	ULONG ulInfo = 0;
+
+	switch (ulControlCode)
+	{
+	case IOCTL_TEST:
+	{
+		break;
+	}
+	default:
+		break;
+	}
+
+	pIrp->IoStatus.Status = status;
+	pIrp->IoStatus.Information = ulInfo;
+	IoCompleteRequest(pIrp, IO_NO_INCREMENT);
+
+	DbgPrint("Leave DriverControlHandle\n");
+	return status;
+}
+
+NTSTATUS CreateDevice(PDRIVER_OBJECT pDriverObject)
+{
+	DbgPrint("Enter CreateDevice\n");
+	NTSTATUS status = STATUS_SUCCESS;
+	PDEVICE_OBJECT pDevObj = NULL;
+	UNICODE_STRING ustrDevName, ustrSymName;
+	RtlInitUnicodeString(&ustrDevName, DEV_NAME);
+	RtlInitUnicodeString(&ustrSymName, SYM_NAME);
+
+	status = IoCreateDevice(pDriverObject, 0, &ustrDevName, FILE_DEVICE_UNKNOWN, 0, FALSE, &pDevObj);
+	if (!NT_SUCCESS(status))
+	{
+		DbgPrint("IoCreateDevice Error[0x%X]\n", status);
+		return status;
+	}
+
+	status = IoCreateSymbolicLink(&ustrSymName, &ustrDevName);
+	if (!NT_SUCCESS(status))
+	{
+		DbgPrint("IoCreateSymbolicLink Error[0x%X]\n", status);
+		return status;
+	}
+
+	DbgPrint("Leave CreateDevice\n");
+	return status;
+}
+
 
 NTSTATUS DriverDefaultHandle(PDEVICE_OBJECT pDevObj, PIRP pIrp)
 {
@@ -70,15 +197,21 @@ NTSTATUS DriverEntry(_In_ PDRIVER_OBJECT pDriverObject, _In_ PUNICODE_STRING Reg
 	DbgPrint("Enter CreateDevice\n");
 	NTSTATUS status = STATUS_SUCCESS;
 	pDriverObject->DriverUnload = DriverUnload;
-	for (ULONG i = 0; i < IRP_MJ_MAXIMUM_FUNCTION; i++)
-	{
-		pDriverObject->MajorFunction[i] = DriverDefaultHandle;
-	}
+	pDriverObject->MajorFunction[IRP_MJ_CREATE] = DriverDefaultHandle;
+	pDriverObject->MajorFunction[IRP_MJ_CLOSE] = DriverDefaultHandle;
+	pDriverObject->MajorFunction[IRP_MJ_DEVICE_CONTROL] = DriverControlHandle;
 
-	//Òş²ØÇı¶¯
+	status = CreateDevice(pDriverObject);
+
+	//éšè—é©±åŠ¨
 	//TESTDRIVERHIDE(pDriverObject);
-	//Òş²Ø½ø³Ì
+	//éšè—è¿›ç¨‹
 	//TESTPROCESSHIDE();
+
+	//æ–‡ä»¶ä¿æŠ¤
+	//TESTPROTECTFILE();
+	//æ–‡ä»¶å¼ºåˆ 
+	TESTFORCEDELFILE();
 
 	DbgPrint("Leave CreateDevice\n");
 	return status;
