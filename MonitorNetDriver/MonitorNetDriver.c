@@ -11,16 +11,17 @@
 #define DEV_NAME L"\\Device\\MY_WFP_DEV_NAME"
 #define SYM_NAME L"\\DosDevices\\MY_WFP_SYM_NAME"
 
+PDEVICE_OBJECT g_DevObj;
+
 NTSTATUS CreateDevice(PDRIVER_OBJECT pDriverObject)
 {
 	DbgPrint("Enter CreateDevice\n");
 	NTSTATUS status = STATUS_SUCCESS;
-	PDEVICE_OBJECT pDevObj = NULL;
 	UNICODE_STRING ustrDevName, ustrSymName;
 	RtlInitUnicodeString(&ustrDevName, DEV_NAME);
 	RtlInitUnicodeString(&ustrSymName, SYM_NAME);
 
-	status = IoCreateDevice(pDriverObject, 0, &ustrDevName, FILE_DEVICE_NETWORK, 0, FALSE, &pDevObj);
+	status = IoCreateDevice(pDriverObject, 0, &ustrDevName, FILE_DEVICE_NETWORK, 0, FALSE, &g_DevObj);
 	if (!NT_SUCCESS(status))
 	{
 		ShowError("IoCreateDevice", status);
@@ -77,7 +78,7 @@ NTSTATUS DriverEntry(PDRIVER_OBJECT pDriverObject, PUNICODE_STRING RegistryPath)
 	CreateDevice(pDriverObject);
 
 	// Æô¶¯WFP
-	WfpLoad(pDriverObject->DeviceObject);
+	WfpLoad(g_DevObj);
 
 	DbgPrint("Leave DriverEntry\n");
 	return status;
