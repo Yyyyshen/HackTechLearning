@@ -1,6 +1,8 @@
 /**
  * WFP网络监控
  * 不稳定，偶尔蓝屏  irql not less or equal
+ * 
+ * 2021/01/25 学习了另一本书的WFP内容，测试例子通过，并无蓝屏情况，回来看一下这个demo
  */
 
 #include "WFP_Network.h"
